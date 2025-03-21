@@ -1,0 +1,21 @@
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'application'
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
+
+    application {
+        mainClass = 'io.kay.Main'
+    }
+
+    jar {
+        manifest {
+            attributes 'Main-Class': application.mainClass
+        }
+    }
+}
