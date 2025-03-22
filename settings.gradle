@@ -1,3 +1,4 @@
 rootProject.name = 'jvmti-talk'
 
 include '1-simple'
+include '2-npe'

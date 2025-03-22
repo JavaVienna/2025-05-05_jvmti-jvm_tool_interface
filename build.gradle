@@ -3,6 +3,9 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'application'
 
+    group = 'io.kay'
+    version = '1.0-SNAPSHOT'
+
     java {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(21))
@@ -17,5 +20,18 @@ subprojects {
         manifest {
             attributes 'Main-Class': application.mainClass
         }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
