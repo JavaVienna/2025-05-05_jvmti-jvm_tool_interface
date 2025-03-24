@@ -4,4 +4,4 @@ include_directories(
         "~/.sdkman/candidates/java/current/include/linux/"
 )
 
-add_library(agent-2 SHARED agent.c)
+add_library(agent-3 SHARED agent.c)
