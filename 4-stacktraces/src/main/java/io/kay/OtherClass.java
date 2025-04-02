@@ -3,14 +3,18 @@ package io.kay;
 public final class OtherClass {
 
     public static void methodStack3() {
-        exceptionMethod();
+        exceptionMethod("This may be an easy to fix exception...", "This is argument is unused", 42);
     }
 
-    private static void exceptionMethod() {
+    private static void exceptionMethod(String message, String otherString, int someInt) {
         try {
-            throw new Exception("This may be an easy to fix exception...");
+            throw new Exception(message);
         } catch (Exception ex) {
-            System.err.println("but I'm hiding it!");
+            System.err.print("...but I'm hiding it");
+        } finally {
+            System.err.print("!");
         }
+
+        System.err.println("!");
     }
 }

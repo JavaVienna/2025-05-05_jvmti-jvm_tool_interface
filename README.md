@@ -1,15 +1,19 @@
 # JVMTI Talk
 
+* Explain difference of JVMTI & JNI
+
 ## modules
 
 1-simple: Just a simple example to show that jvmti works on bytecode, not sourcecode
 
-2-npe: A showcase of how jvmti has improved debugging in the past (pre JDK13)
+2-npe: JVMTI has enabled devs to improved debugging in the past (pre JDK13)
 
-3-oom: Shows how jvmti can help end the program when something goes wrong
+3-oom: JVMTI can help end the program when something goes wrong
+
+4-stacktraces: JVMTI can help to improve insights of exceptions
 
 ## open ideas
-Faketime und heap walker hab ich nicht hin bekommen von https://github.com/odnoklassniki/jvmti-tools
+Wasn't able to implement faketime and heap walker of https://github.com/odnoklassniki/jvmti-tools
 
 Secrets auslesen
 variablen verändern
@@ -18,16 +22,13 @@ track threads
 iterate through heap
 watch fields
 tag objects
+understand raw monitor
 
-https://github.com/AndroidAdvanceWithGeektime/JVMTI_Sample
+https://github.com/AndroidAdvanceWithGeektime/JVMTI_Sample | quite complex
 
-https://github.com/HeapStats/heapstats
+https://github.com/HeapStats/heapstats | quite complex
 
-https://github.com/sachin-handiekar/jvmti-examples
-
-https://github.com/headius/hprof2
-
-https://github.com/cretz/stackparam
+https://github.com/headius/hprof2 | probably better to simply check out
 
 https://github.com/liuzhengyang/jvmti_examples/blob/master/jvmti_example.cpp
 

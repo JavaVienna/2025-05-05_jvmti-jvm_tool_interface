@@ -82,11 +82,9 @@ resource_exhausted(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jint flags,
  */
 static void JNICALL
 killer_thread(jvmtiEnv* jvmti, JNIEnv* jni, void *p) {
-    jvmtiError err;
-
     fprintf(stdout, "(jvmquake) OOM killer thread started\n");
 
-    err = (*jvmti)->RawMonitorEnter(jvmti, lock);
+    jvmtiError err = (*jvmti)->RawMonitorEnter(jvmti, lock);
     error_check(err, "killer thread could not enter lock");
     err = (*jvmti)->RawMonitorWait(jvmti, lock, 0);
     error_check(err, "killer thread could not wait on lock");
