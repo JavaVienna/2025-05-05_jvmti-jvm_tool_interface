@@ -20,6 +20,7 @@ variablen verändern
 breakpoint
 track threads
 iterate through heap
+iterate through loaded classes
 watch fields
 tag objects
 understand raw monitor
@@ -30,11 +31,9 @@ https://github.com/HeapStats/heapstats | quite complex
 
 https://github.com/headius/hprof2 | probably better to simply check out
 
-https://github.com/liuzhengyang/jvmti_examples/blob/master/jvmti_example.cpp
+https://github.com/kylixs/flare-profiler/tree/master/flare-agent/src | quite complex
 
-https://github.com/kylixs/flare-profiler/tree/master/flare-agent/src
-
-https://github.com/xingfengwxx/MemoryMonitor/blob/master/app/src/main/cpp/native-lib.cpp
+https://github.com/xingfengwxx/MemoryMonitor/blob/master/app/src/main/cpp/native-lib.cpp -> can be used with oom slow-death to track memory allocations and so on
 
 https://github.com/karlbennett/count-agent
 
@@ -44,8 +43,12 @@ https://github.com/Devexperts/aprof
 
 https://github.com/jon-bell/bytecode-examples
 
-todo google search
+https://github.com/check-leak/check-leak/blob/d294635500df872cb9fb01f34b805cd19bb0d3ac/check-leak/src/main/c/agent.c#L385 
+
+https://github.com/sunwu51/notebook/blob/d5941f316ffeb972a3c40e49181fa4191189e95e/23.12/jni/MyJVMTI.c#L34
+
+google search
 
 bookmarks
 
-access values with JNI
+github search for certain jvmti usages

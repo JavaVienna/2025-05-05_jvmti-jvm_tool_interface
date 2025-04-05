@@ -37,7 +37,7 @@ static unsigned long val;
 static jrawMonitorID lock;
 
 // Defaults
-static unsigned long opt_gc_threshold = 30; // seconds, converted to nanos in the init
+static unsigned long opt_gc_threshold = 10; // seconds, converted to nanos in the init
 // corresponds to a thoughput of 1/(5+1) == 16.666%
 static unsigned long opt_runtime_weight = 5;
 // trigger an OOM
@@ -52,9 +52,7 @@ static char          opt_gc_warning_path[256] = "/tmp/jvmquake_warn_gc";
 // Signal variable that the watchdog should trigger an action
 static short trigger_killer = 0;
 
-void
-error_check(jvmtiError code, const char *msg)
-{
+void error_check(jvmtiError code, const char *msg) {
     if (code != JVMTI_ERROR_NONE) {
         fprintf(stderr, "(jvmquake) ERROR [%d], triggering abort: %s.\n", code, msg);
         raise(SIGABRT);
@@ -63,9 +61,8 @@ error_check(jvmtiError code, const char *msg)
 }
 
 // On OOM, kill the process. This happens after the HeapDumpOnOutOfMemory
-static void JNICALL
-resource_exhausted(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jint flags,
-                   const void *reserved, const char *description) {
+static void JNICALL resource_exhausted(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jint flags,
+                                       const void *reserved, const char *description) {
     fprintf(stderr,
             "(jvmquake) ResourceExhausted: %s: sending %d then killing current process!\n",
             description, opt_signal);
@@ -80,8 +77,7 @@ resource_exhausted(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jint flags,
  * could find was to make JNI calls that allocate large blobs of memory which
  * can only be done from outside of the GC callbacks.
  */
-static void JNICALL
-killer_thread(jvmtiEnv* jvmti, JNIEnv* jni, void *p) {
+static void JNICALL killer_thread(jvmtiEnv* jvmti, JNIEnv* jni, void *p) {
     fprintf(stdout, "(jvmquake) OOM killer thread started\n");
 
     jvmtiError err = (*jvmti)->RawMonitorEnter(jvmti, lock);
@@ -105,8 +101,7 @@ killer_thread(jvmtiEnv* jvmti, JNIEnv* jni, void *p) {
 }
 
 /* Creates a Java thread */
-static jthread
-alloc_thread(JNIEnv *env) {
+static jthread alloc_thread(JNIEnv *env) {
     jclass    thrClass;
     jmethodID cid;
     jthread   res;
@@ -120,9 +115,8 @@ alloc_thread(JNIEnv *env) {
 /* Callback for JVMTI_EVENT_VM_INIT
  * We setup an agent thread that we can later make JNI calls from
  * */
-static void JNICALL
-vm_init(jvmtiEnv *jvmti, JNIEnv *env, jthread thread)
-{
+static void JNICALL vm_init(jvmtiEnv *jvmti, JNIEnv *env, jthread thread) {
+    printf("called vm_init\n");
     // We only need to do set up a killer thread when signal==0 (i.e. OOM)
     if(opt_signal != 0)
         return;
@@ -135,9 +129,7 @@ vm_init(jvmtiEnv *jvmti, JNIEnv *env, jthread thread)
     error_check(err, "Could not allocate killer thread");
 }
 
-static void JNICALL
-gc_start(jvmtiEnv *jvmti)
-{
+static void JNICALL gc_start(jvmtiEnv *jvmti) {
     clock_gettime(CLOCK_MONOTONIC, &last_start);
 
     unsigned long running_nanos = (
@@ -150,8 +142,7 @@ gc_start(jvmtiEnv *jvmti)
     else { val -= running_nanos; }
 }
 
-static void JNICALL
-gc_finished(jvmtiEnv *jvmti) {
+static void JNICALL gc_finished(jvmtiEnv *jvmti) {
     jvmtiError err;
 
     clock_gettime(CLOCK_MONOTONIC, &last_end);
@@ -194,8 +185,7 @@ gc_finished(jvmtiEnv *jvmti) {
     }
 }
 
-static void
-parse_kwargs(char *kwargs) {
+static void parse_kwargs(char *kwargs) {
     if (strlen(kwargs) == 0) { return; }
     const char comma[2] = ",";
 
@@ -232,9 +222,7 @@ parse_kwargs(char *kwargs) {
     }
 }
 
-JNIEXPORT jint JNICALL
-Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
-{
+JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
     jvmtiEnv *jvmti;
     jvmtiError err;
     char *opt_kwargs;
