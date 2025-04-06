@@ -29,22 +29,6 @@ jvmtiIterationControl iterateCallback(jlong class_tag, jlong size, jlong *tag_pt
 }
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
-    jclass klass = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
-    jmethodID id = (*jni_env)->GetStaticMethodID(jni_env, klass, "createPeopleForever", "(Ljava/util/List;)V");
-
-    jlocation start;
-    jlocation end;
-    (*jvmti_env)->GetMethodLocation(jvmti_env, id, &start, &end);
-    (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 28);
-
-    jint variableCount;
-    jvmtiLocalVariableEntry* variables;
-    (*jvmti_env)->GetLocalVariableTable(jvmti_env, id, &variableCount, &variables);
-
-    printf("(jvmti) Method createPeopleForever has %d local variables: \n", variableCount);
-    for (int i = 0; i < variableCount; i++) {
-        printf("(jvmti) Variable #%d: %s \n", i, variables[i].name);
-    }
 }
 
 int counter = 0;

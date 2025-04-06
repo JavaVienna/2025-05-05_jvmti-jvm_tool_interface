@@ -1,7 +1,5 @@
 # JVMTI Talk
 
-* Explain difference of JVMTI & JNI
-
 ## modules
 
 1-simple: Just a simple example to show that jvmti works on bytecode, not sourcecode
@@ -15,15 +13,12 @@
 ## open ideas
 Wasn't able to implement faketime and heap walker of https://github.com/odnoklassniki/jvmti-tools
 
-Secrets auslesen
-variablen verändern
-breakpoint
+read secrets
 track threads
 iterate through heap
-iterate through loaded classes
 watch fields
-tag objects
 understand raw monitor
+kotlin
 
 https://github.com/AndroidAdvanceWithGeektime/JVMTI_Sample | quite complex
 
@@ -47,8 +42,14 @@ https://github.com/check-leak/check-leak/blob/d294635500df872cb9fb01f34b805cd19b
 
 https://github.com/sunwu51/notebook/blob/d5941f316ffeb972a3c40e49181fa4191189e95e/23.12/jni/MyJVMTI.c#L34
 
+https://github.com/toolfactory/narcissus/blob/main/src/main/c/narcissus.c
+
 google search
 
 bookmarks
 
 github search for certain jvmti usages
+
+what other tools use jvmti (and how)
+
+supply thread for notification

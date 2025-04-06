@@ -6,3 +6,4 @@
 * tools that use it
 * showcase of example
 * master thesis
+* Explain difference of JVMTI & JNI
