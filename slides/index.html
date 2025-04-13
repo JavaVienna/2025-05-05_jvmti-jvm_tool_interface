@@ -53,8 +53,29 @@
             </small>
         </section>
 
+        <section data-auto-animate>
+            <h2>About me</h2>
+
+            <div style="display: flex;">
+                <div style="display: flex; flex-direction: column; width: 60%">
+                    <p>JVM developer since finishing school (2017)</p>
+                    <p>Studied IT-Security besides work</p>
+                    <p>JVMTI was the main focus of the master thesis</p>
+                </div>
+
+                <div style="display: flex; width: 40%;">
+                    <img src="assets/me.jpeg" style="width: 100%; height: auto"/>
+                </div>
+            </div>
+
+        </section>
+
+        <section data-auto-animate>
+            <p>Who of you have heard of JVMTI before?</p>
+        </section>
+
         <section data-auto-animate data-auto-animate-unmatched="fade">
-            <h3 data-id="code-title">Null Pointer Exception</h3>
+            <h3 data-id="code-title">Null Pointer Exception <br/><strong>in Java 11</strong></h3>
 
             <pre class="fragment">
 			<code class="text" data-trim>
@@ -65,56 +86,84 @@
 
             <div class="fragment">
                 <pre data-id="code-animation">
-				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="18" data-line-numbers="3">
+				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="19" data-line-numbers="2">
 				public static void main(String[] args) {
-      // 3 possibilities which could be null in this line
 					var value = Helper.getMap().get("data").getData().toLowerCase();
 					System.out.println(value);
-				}</code>
+				}
+                </code>
+			</pre>
+            </div>
+        </section>
+
+
+        <section data-auto-animate data-auto-animate-unmatched="fade">
+            <h3 data-id="code-title">Null Pointer Exception <br/><strong>in Java 11</strong></h3>
+
+            <pre>
+			<code class="text" data-trim>
+                Exception in thread "main" java.lang.NullPointerException
+                    at io.kay.Main.main(Main.java:20)
+			</code>
 			</pre>
 
-                <small style="padding-top: 10%">
-                    Hint: This is an error message from Java 11
-                </small>
+            <div>
+                <pre data-id="code-animation">
+				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="18" data-line-numbers="3">
+				public static void main(String[] args) {
+                    // 3 possibilities which could be null in this line
+					var value = Helper.getMap().get("data").getData().toLowerCase();
+					System.out.println(value);
+				}
+                </code>
+			</pre>
             </div>
 
+            <p class="fragment">JVMTI to the rescue!</p>
         </section>
 
         <section data-auto-animate>
             <h2 data-id="code-title">JVM Tool Interface</h2>
             <p>An API which allows to create <strong>agents</strong> to:</p>
             <ul>
-                <li>Inspect the state of the JVM</li>
-                <li>The execution of the running application</li>
-                <li>Modify values or the execution flow</li>
+                <li>Actively inspect the state of the JVM</li>
+                <li>Passively get notified about certain events</li>
+                <li>Alter the execution of the running application</li>
             </ul>
         </section>
 
         <section data-auto-animate>
             <h2>Let's talk basics</h2>
             <p>What do you need to run a program in the JVM?</p>
-            <img src="assets/jvm-code.drawio.svg" class="fragment"/>
+            <img src="assets/jvm.drawio.svg" class="fragment"/>
+            <p class="fragment">Bytecode & JVM are <a
+                    href="https://docs.oracle.com/javase/specs/jvms/se24/html/index.html">standardized</a>
+            </p>
+            <p class="fragment">The JVM is natively compiled for the machine it runs on</p>
         </section>
 
         <section data-auto-animate>
-            <h2>Let's talk basics</h2>
-            <img src="assets/jvm-code.drawio.svg"/>
-            <p>The JVM on a machine is natively compiled</p>
-            <p class="fragment">Hence, the API of JVMTI needs to be natively compiled</p>
+            <h3>Where's JVMTI now?</h3>
+            <img src="assets/jvmti.drawio.svg"/>
         </section>
 
         <section data-auto-animate>
-            <h2>Let's talk basics</h2>
-            <p>The JVM on a machine is natively compiled</p>
-            <p>Hence, the API of JVMTI needs to be natively compiled</p>
-            <strong>That means writing code in C/C++</strong>
+            <h3>There is a <strong>catch</strong>, though</h3>
+            <p>Since the JVM is natively compiled, the agent must be natively compiled as well</p>
+            <strong class="fragment">That means writing code in C/C++</strong>
+        </section>
+
+        <section data-background-size="80%"
+                 data-background="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzJjMHU1ZGdhd3M4djFsMTd4dHJqdGZqN3VsdDEzZ256dW16bnY2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G1vplGMypxBcp7kx32/giphy.gif">
         </section>
 
         <section data-auto-animate>
-            <p></p>
-        </section>
-
-        <section data-background-size="80%" data-background="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzJjMHU1ZGdhd3M4djFsMTd4dHJqdGZqN3VsdDEzZ256dW16bnY2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G1vplGMypxBcp7kx32/giphy.gif">
+            <p>Just like bytecode and the JVM, <br/>JVMTI is <strong>standardized</strong> as well</p>
+            <div class="fragment">
+                <h2>Caution!</h2>
+                <p>JVMs are <strong>not required</strong> to implement it</p>
+                <p>Everything from now on references Oracle's JVMs (and was tested with OpenJDK)</p>
+            </div>
         </section>
 
         <section data-background-iframe="https://docs.oracle.com/en/java/javase/21/docs/specs/jvmti.html">
@@ -127,13 +176,126 @@
         </section>
 
         <section data-auto-animate>
-            <h2 onload="document.getElementById('theme').setAttribute('href','dist/theme/blood.css');">Let's talk
-                basics</h2>
-            <img src="assets/jvm-code.drawio.svg"/>
+            <h2>Which tools use JVMTI?</h2>
+            <ul>
+                <li>Debuggers</li>
+                <li>Profilers</li>
+                <li>Analyzers</li>
+                <li class="fragment">Malware</li>
+                <li class="fragment">Specific solutions for specific problems</li>
+            </ul>
         </section>
 
-    </div>
+        <section data-auto-animate>
+            <h2>Some examples JVMTI is useful for:</h2>
+            <ul>
+                <li>Tracking:
+                    <ul>
+                        <li>Threads</li>
+                        <li>Memory (or objects in it)</li>
+                        <li>Classloading</li>
+                        <li>Garbage collection</li>
+                        <li>Field modification</li>
+                        <li>Execution flow</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>...</p>
+        </section>
 
+        <section data-auto-animate>
+            <h2>Some examples JVMTI is useful for:</h2>
+            <p>...</p>
+            <ul>
+                <li>Inspect:
+                    <ul>
+                        <li>Classes</li>
+                        <li>or methods</li>
+                        <li>or fields</li>
+                        <li>or variables</li>
+                        <li>or threads</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section data-auto-animate data-background-size="66%"
+                 data-background="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDFrb3gybWY5amU4ZzZzdmxya3J0bGF1ZzYzZGp6ZXEyODE5cm9scSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gDcYqye9fh3QH3sGSl/giphy.gif">
+        </section>
+
+        <section data-auto-animate>
+            <h2>First, some basic starter knowledge</h2>
+        </section>
+
+        <section data-auto-animate>
+            <h2>The JVM operates on <strong>bytecode</strong></h2>
+            <p>and so does JVMTI</p>
+        </section>
+
+        <section data-auto-animate>
+            <h2>Declare your <strong>capabilities</strong></h2>
+            <p>Tell the JVM what your agent wants to do</p>
+
+            <pre>
+				<code class="hljs language-c" data-trim>
+                    jvmtiCapabilities capabilities;
+                    capabilities.can_generate_exception_events = 1;
+                    capabilities.can_get_bytecodes = 1;
+                    capabilities.can_get_constant_pool = 1;
+                    (*jvmti)->AddCapabilities(jvmti, &capabilities);
+				</code>
+			</pre>
+
+        </section>
+
+        <section data-auto-animate>
+            <h2>Events/Callbacks</h2>
+            <p>Register your callbacks to <strong>receive events</strong></p>
+            <div>
+            <pre>
+				<code class="hljs c" data-trim>
+                    void MethodEntryCallback(jvmtiEnv *jvmti,
+                                             JNIEnv *jni,
+                                             jthread thread,
+                                             jmethodID method) {
+                    }
+                    //...
+                    jvmtiEventCallbacks callbacks;
+                    callbacks.MethodEntry = (void *) &MethodEntryCallback;
+
+                    (*jvmti)->SetEventCallbacks(
+                        jvmti,
+                        &callbacks,
+                        (jint) sizeof(callbacks)
+                    );
+
+                    // does not need to be on agent startup
+                    (*jvmti)->SetEventNotificationMode(
+                        jvmti,
+                        JVMTI_ENABLE,
+                        JVMTI_EVENT_METHOD_ENTRY,
+                        (jthread) NULL // enable thread globally
+                    );
+				</code>
+			</pre>
+            </div>
+        </section>
+
+        <section data-auto-animate>
+            <h1>Let's start with examples!</h1>
+        </section>
+
+        <section data-auto-animate>
+            <h2>Beware</h2>
+            <p>Don't simply add any (untrusted) agent to your jar</p>
+            <p>JVMTI applied to Spring applications is much harder</p>
+            <p class="fragment">JVMTI adds runtime overhead to your application</p>
+        </section>
+
+        <section data-auto-animate data-background-size="70%"
+                 data-background="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTVxdm9zNTNraWhzcm1yOGhoMjIybjI3ZGVqdTk0ejIxZTAzcDU0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btXJrqLo5bbtQDm/giphy.gif">
+        </section>
+    </div>
 </div>
 
 <script src="dist/reveal.js"></script>

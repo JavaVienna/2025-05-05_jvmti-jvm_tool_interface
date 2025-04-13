@@ -1,0 +1,10 @@
+plugins {
+    id 'io.quarkus' version '3.19.3'
+}
+
+dependencies {
+    implementation enforcedPlatform("io.quarkus.platform:quarkus-bom:3.19.3")
+    implementation 'io.quarkus:quarkus-rest'
+    implementation 'io.quarkus:quarkus-rest-jackson'
+    implementation 'io.quarkus:quarkus-container-image-docker'
+}

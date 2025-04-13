@@ -3,9 +3,6 @@
 #include <sys/un.h>
 #include <stdlib.h>
 
-JavaVM *global_jvm;
-jvmtiEnv *environment;
-
 static jclass nullPointerException = NULL;
 static jfieldID detailMessage = NULL;
 
@@ -124,37 +121,19 @@ void Exception(jvmtiEnv *jvmti_env,
     (*jvmti_env)->Deallocate(jvmti_env, bytecodes);
 }
 
-void installCallback(const jvmtiEvent event_type) {
-    const jvmtiError error = (*environment)->SetEventNotificationMode(environment,
-                                                                      JVMTI_ENABLE,
-                                                                      event_type,
-                                                                      (jthread) NULL);
-    if (error != JNI_OK) {
-        printf("Error registering callback of event type %d\n", event_type);
-    }
-}
-
-void installCallbacks() {
-    // events to receive a callback for
-    const jvmtiEvent eventsToInstall[] = {
-        JVMTI_EVENT_EXCEPTION
-    };
-
-    const long arraySize = *(&eventsToInstall + 1) - eventsToInstall;
-    for (long i = 0; i < arraySize; i++) {
-        installCallback(eventsToInstall[i]);
-    }
-}
-
 // is called when the jvm has been initialized
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env) {
-    (*jni_env)->GetJavaVM(jni_env, &global_jvm);
-
     printf("Installing JVMTI callbacks\n");
-    installCallbacks();
+    const jvmtiError error = (*jvmti_env)->SetEventNotificationMode(jvmti_env,
+                                                                      JVMTI_ENABLE,
+                                                                      JVMTI_EVENT_EXCEPTION,
+                                                                      (jthread) NULL);
+    if (error != JNI_OK) {
+        printf("Error registering callback of event type %d\n", JVMTI_EVENT_EXCEPTION);
+    }
 
     jclass localNPE = (*jni_env)->FindClass(jni_env, "java/lang/NullPointerException");
-    nullPointerException = (jclass) (*jni_env)->NewGlobalRef(jni_env, localNPE);
+    nullPointerException = (*jni_env)->NewGlobalRef(jni_env, localNPE);
 
     jclass Throwable = (*jni_env)->FindClass(jni_env, "java/lang/Throwable");
     detailMessage = (*jni_env)->GetFieldID(jni_env, Throwable, "detailMessage", "Ljava/lang/String;");
@@ -163,11 +142,10 @@ void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env) {
 // is called when java agent is loaded
 jint Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
     jvmtiEventCallbacks callbacks;
-    jvmtiError error;
-    jint result;
+    jvmtiEnv* environment;
 
     // get JVMTI environment
-    result = (*vm)->GetEnv(vm, (void **) &environment, JVMTI_VERSION_11);
+    jint result = (*vm)->GetEnv(vm, (void **) &environment, JVMTI_VERSION_11);
     if (result != 0) {
         return JNI_ERR;
     }
@@ -179,7 +157,7 @@ jint Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
     capabilities.can_get_bytecodes = 1;
     capabilities.can_get_constant_pool = 1;
 
-    error = (*environment)->AddCapabilities(environment, &capabilities);
+    jvmtiError error = (*environment)->AddCapabilities(environment, &capabilities);
     if (error != JNI_OK) {
         return JNI_ERR;
     }
@@ -208,5 +186,5 @@ jint Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
 
 // is called when agent is unloaded
 void Agent_OnUnload(JavaVM *vm) {
-    printf("\nAgent Unloaded\n");
+    printf("Agent Unloaded\n");
 }

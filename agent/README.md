@@ -10,6 +10,9 @@ Because this project also accesses some functions with JNI, here is the document
 
 ## Sources & Acknowledgement
 
-2. NPE has been ported from https://github.com/odnoklassniki/jvmti-tools/blob/master/richNPE/richNPE.cpp
+1. NPE has been ported from https://github.com/odnoklassniki/jvmti-tools/blob/master/richNPE/richNPE.cpp
+2. Is a simple agent which logs method entries to show that JVMTI (and the JVM) operates on bytecode level
 3. jvmquake is from https://github.com/Netflix-Skunkworks/jvmquake
 4. stacktraces is from https://github.com/sachin-handiekar/jvmti-examples/blob/master/GetAllStackTraces/Native/library.cpp and https://github.com/cretz/stackparam/blob/master/src/lib.rs
+5. track-objects uses tagging and iterating to track objects in the heap
+7. 

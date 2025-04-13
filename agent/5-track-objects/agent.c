@@ -29,6 +29,22 @@ jvmtiIterationControl iterateCallback(jlong class_tag, jlong size, jlong *tag_pt
 }
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
+    jclass klass = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
+    jmethodID id = (*jni_env)->GetStaticMethodID(jni_env, klass, "createPeopleForever", "(Ljava/util/List;)V");
+
+    jlocation start;
+    jlocation end;
+    (*jvmti_env)->GetMethodLocation(jvmti_env, id, &start, &end);
+    (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 28);
+
+    jint variableCount;
+    jvmtiLocalVariableEntry* variables;
+    (*jvmti_env)->GetLocalVariableTable(jvmti_env, id, &variableCount, &variables);
+
+    printf("(jvmti) Method createPeopleForever has %d local variables: \n", variableCount);
+    for (int i = 0; i < variableCount; i++) {
+        printf("(jvmti) Variable #%d: %s \n", i, variables[i].name);
+    }
 }
 
 int counter = 0;
@@ -98,7 +114,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *jvm, char *options, void *reserved) 
     error = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_VM_INIT, (jthread) NULL);
     checkJVMTIError(jvmti, error, "Cannot set vm init Event Notification");
     error = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_BREAKPOINT, (jthread) NULL);
-    checkJVMTIError(jvmti, error, "Cannot set breakbpoint Event Notification");
+    checkJVMTIError(jvmti, error, "Cannot set breakpoint Event Notification");
 
     jvmtiEventCallbacks eventCallbacks;
     (void) memset(&eventCallbacks, 0, sizeof(eventCallbacks));

@@ -1,8 +1,10 @@
 rootProject.name = 'jvmti-talk'
 
-include '1-simple'
-include '2-npe'
+include '1-npe'
+include '2-simple'
 include '3-oom'
 include '4-stacktraces'
 include '5-track-objects'
 include '6-bypass-security'
+include '7-spring-app'
+include '8-quarkus-app'

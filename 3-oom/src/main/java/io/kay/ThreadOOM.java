@@ -9,11 +9,11 @@ public class ThreadOOM {
         System.out.println("Thread ~fork bombing the JVM ...");
         List<Thread> list = new ArrayList<>();
         try {
-            for (int i = 0; i < 128 * 1024 * 1024; i++) {
+            for (int i = 0; i < 127 * 1024 * 1020; i++) {
                 Thread thread = new Thread(() -> {
                     while (true) {
                         try {
-                            Thread.sleep(80000);
+                            Thread.sleep(60000);
                             System.out.println("Done!");
                         } catch (InterruptedException ign) {
                         }

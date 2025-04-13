@@ -2,23 +2,26 @@
 
 ## modules
 
-1-simple: Just a simple example to show that jvmti works on bytecode, not sourcecode
+1-npe: JVMTI has enabled devs to improved debugging in the past (pre JDK13)
 
-2-npe: JVMTI has enabled devs to improved debugging in the past (pre JDK13)
+2-simple: Just a simple example to show that jvmti works on bytecode, not sourcecode
 
 3-oom: JVMTI can help end the program when something goes wrong
 
 4-stacktraces: JVMTI can help to improve insights of exceptions
 
+5-tack-objects: Shows that with JVMTI you can count objects, but also those who still needs to be garbage collected
+
+6-bypass-security: A showcase how you can access restricted logic of java applications
+
 ## open ideas
 Wasn't able to implement faketime and heap walker of https://github.com/odnoklassniki/jvmti-tools
 
-read secrets
-track threads
-iterate through heap
 watch fields
 understand raw monitor
 kotlin
+show that obfuscation helps to hide logic
+bytecode instrumentation
 
 https://github.com/AndroidAdvanceWithGeektime/JVMTI_Sample | quite complex
 
@@ -51,5 +54,3 @@ bookmarks
 github search for certain jvmti usages
 
 what other tools use jvmti (and how)
-
-supply thread for notification

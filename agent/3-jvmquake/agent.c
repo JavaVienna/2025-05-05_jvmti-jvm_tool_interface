@@ -265,9 +265,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
        return JNI_ERR;
     }
 
-    jvmtiEventCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(callbacks));
-
+    jvmtiEventCallbacks callbacks = {0};
     callbacks.VMInit                  = &vm_init;
     callbacks.ResourceExhausted       = &resource_exhausted;
     callbacks.GarbageCollectionStart  = &gc_start;
