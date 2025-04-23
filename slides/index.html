@@ -281,6 +281,16 @@
             </div>
         </section>
 
+        <section>
+            <h2>Attach the agent to the JVM at startup</h2>
+            <pre>
+				<code class="hljs bash" data-trim>
+                    make all # compile first
+                    java -agentpath:./agent.so -jar application.jar
+				</code>
+			</pre>
+        </section>
+
         <section data-auto-animate>
             <h1>Let's start with examples!</h1>
         </section>
@@ -290,6 +300,7 @@
             <p>Don't simply add any (untrusted) agent to your jar</p>
             <p>JVMTI applied to Spring applications is much harder</p>
             <p class="fragment">JVMTI adds runtime overhead to your application</p>
+            <p class="fragment">Callbacks are <strong>blocking</strong> operations</p>
         </section>
 
         <section data-auto-animate data-background-size="70%"

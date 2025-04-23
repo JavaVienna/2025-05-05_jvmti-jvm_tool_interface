@@ -1,10 +1,22 @@
+pluginManagement {
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '2.1.20'
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
 rootProject.name = 'jvmti-talk'
 
 include '1-npe'
 include '2-simple'
+include '2-simple-kotlin'
 include '3-oom'
 include '4-stacktraces'
 include '5-track-objects'
 include '6-bypass-security'
 include '7-spring-app'
 include '8-quarkus-app'
+include '9-track-threads'
