@@ -18,7 +18,7 @@ public final class Main {
 
         new Thread(() -> {
             try {
-                createPeopleForever(list);
+                execute(list);
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -31,7 +31,7 @@ public final class Main {
         return new Person(new String(bytes), RANDOM.nextInt());
     }
 
-    private static void createPeopleForever(List<Person> list) throws Exception {
+    private static void execute(List<Person> list) throws Exception {
         System.out.printf("Creating %d people\n", BATCH_SIZE);
         Stream.generate(Main::addPerson).limit(BATCH_SIZE).forEach(list::add);
 

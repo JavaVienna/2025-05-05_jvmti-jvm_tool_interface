@@ -187,7 +187,7 @@
         </section>
 
         <section data-auto-animate>
-            <h2>Some examples JVMTI is useful for:</h2>
+            <h2>JVMTI can be useful for:</h2>
             <ul>
                 <li>Tracking:
                     <ul>
@@ -200,12 +200,10 @@
                     </ul>
                 </li>
             </ul>
-            <p>...</p>
         </section>
 
         <section data-auto-animate>
-            <h2>Some examples JVMTI is useful for:</h2>
-            <p>...</p>
+            <h2>JVMTI can be useful for:</h2>
             <ul>
                 <li>Inspect:
                     <ul>
@@ -224,7 +222,7 @@
         </section>
 
         <section data-auto-animate>
-            <h2>First, some basic starter knowledge</h2>
+            <h2>First, some starter knowledge</h2>
         </section>
 
         <section data-auto-animate>
@@ -274,7 +272,7 @@
                         jvmti,
                         JVMTI_ENABLE,
                         JVMTI_EVENT_METHOD_ENTRY,
-                        (jthread) NULL // enable thread globally
+                        (jthread) NULL // enable globally
                     );
 				</code>
 			</pre>
@@ -292,7 +290,61 @@
         </section>
 
         <section data-auto-animate>
-            <h1>Let's start with examples!</h1>
+            <section>
+                <h1>Let's start with examples!</h1>
+            </section>
+
+            <section data-auto-animate>
+                <p>Enhance NullPointerExceptions</p>
+            </section>
+
+            <section>
+                <p>Print all executed methods</p>
+            </section>
+
+            <section>
+                <p>Find hidden exceptions</p>
+            </section>
+
+            <section>
+                <p>Detect and solve Thread-Starvation</p>
+            </section>
+
+            <section>
+                <p>Track objects in the heap</p>
+            </section>
+
+            <section>
+                <p>Track threads</p>
+            </section>
+
+            <section>
+                <p>Bypass security measures</p>
+            </section>
+
+            <section>
+                <p>Watch field modifications</p>
+            </section>
+
+            <section>
+                <p>Measure method performance</p>
+            </section>
+
+            <section>
+                <p>Custom debugging</p>
+            </section>
+        </section>
+
+
+        <section data-auto-animate data-background-size="66%"
+                 data-background="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjY1eG9mY3NqdHVsNHA3cWk5OTdqY3VscjI4OThlMzh0b2l1dTZlOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lj4gGwQ4EN9Ejkts0a/giphy.gif">
+        </section>
+
+        <section data-auto-animate>
+            <h2><a href="https://spring.io/security/cve-2024-38819">CVE 2024-38819</a></h2>
+            <p>Allows for path-traversal in Spring Boot under certain circumstances</p>
+
+            <p>Is detectable via a JVMTI agent</p>
         </section>
 
         <section data-auto-animate>

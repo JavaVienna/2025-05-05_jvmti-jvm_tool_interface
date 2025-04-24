@@ -1,11 +1,13 @@
 plugins {
     id 'java'
     id 'application'
+    id 'idea'
 }
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'application'
+    apply plugin: 'idea'
 
     group = 'io.kay'
     version = '1.0-SNAPSHOT'
