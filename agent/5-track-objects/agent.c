@@ -30,53 +30,52 @@ jvmtiIterationControl iterateCallback(jlong class_tag, jlong size, jlong *tag_pt
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
     jclass klass = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
-    jmethodID id = (*jni_env)->GetStaticMethodID(jni_env, klass, "createPeopleForever", "(Ljava/util/List;)V");
+    jmethodID id = (*jni_env)->GetStaticMethodID(jni_env, klass, "execute", "(Ljava/util/List;)V");
 
     jlocation start;
     jlocation end;
     (*jvmti_env)->GetMethodLocation(jvmti_env, id, &start, &end);
-    (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 28);
+    (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 23); // without
+    // (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 26); // with System.gc()
 
     jint variableCount;
-    jvmtiLocalVariableEntry* variables;
+    jvmtiLocalVariableEntry *variables;
     (*jvmti_env)->GetLocalVariableTable(jvmti_env, id, &variableCount, &variables);
 
-    printf("(jvmti) Method createPeopleForever has %d local variables: \n", variableCount);
+    printf("(jvmti) Method %p has %d local variables: \n", id, variableCount);
     for (int i = 0; i < variableCount; i++) {
         printf("(jvmti) Variable #%d: %s \n", i, variables[i].name);
     }
 }
 
-int counter = 0;
-
 void Breakpoint(jvmtiEnv *jvmti_env,
-     JNIEnv* jni_env,
-     jthread thread,
-     jmethodID method,
-     jlocation location) {
-
+                JNIEnv *jni_env,
+                jthread thread,
+                jmethodID method,
+                jlocation location) {
     const jclass personClass = (*jni_env)->FindClass(jni_env, "Lio/kay/Main$Person;");
 
     jint fieldCounter;
-    jfieldID* fieldIDs;
+    jfieldID *fieldIDs;
     (*jvmti_env)->GetClassFields(jvmti_env, personClass, &fieldCounter, &fieldIDs);
 
-    char* fieldName;
+    char *fieldName;
     (*jvmti_env)->GetFieldName(jvmti_env, personClass, fieldIDs[0], &fieldName, NULL, NULL);
 
-    int personCounter = 0;
-    (*jvmti_env)->IterateOverInstancesOfClass(jvmti_env, personClass, JVMTI_HEAP_OBJECT_EITHER, iterateCallback, &personCounter);
+    const int personCounter = 0;
+    (*jvmti_env)->IterateOverInstancesOfClass(jvmti_env, personClass, JVMTI_HEAP_OBJECT_EITHER, iterateCallback,
+                                              &personCounter);
     printf("(jvmti) personCounter: %d\n", personCounter);
 
     jint objectCounter;
-    jobject* objects;
-    jlong* tags;
-    (*jvmti_env)->GetObjectsWithTags(jvmti_env, 1, &tag, &objectCounter, &objects, &tags );
+    jobject *objects;
+    jlong *tags;
+    (*jvmti_env)->GetObjectsWithTags(jvmti_env, 1, &tag, &objectCounter, &objects, &tags);
 
     for (int i = 0; i < objectCounter; i++) {
         const jobject personName = (*jni_env)->GetObjectField(jni_env, objects[i], fieldIDs[0]);
         jboolean isCopy;
-        const char* name = (*jni_env)->GetStringUTFChars(jni_env, personName, &isCopy);
+        const char *name = (*jni_env)->GetStringUTFChars(jni_env, personName, &isCopy);
 
         if (strcmp(name, "Reflected Person") == 0) {
             const jobject newString = (*jni_env)->NewStringUTF(jni_env, "Reflected edited by agent");
@@ -86,6 +85,7 @@ void Breakpoint(jvmtiEnv *jvmti_env,
             const jobject newString = (*jni_env)->NewStringUTF(jni_env, "X edited by agent");
             (*jni_env)->SetObjectField(jni_env, objects[i], fieldIDs[0], newString);
         }
+        (*jvmti_env)->SetTag(jvmti_env, objects[i], 0);
     }
 }
 

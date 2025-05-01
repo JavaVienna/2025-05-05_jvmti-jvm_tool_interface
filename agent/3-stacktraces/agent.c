@@ -10,7 +10,7 @@ bool checkJVMTIError(jvmtiEnv *jvmti, const jvmtiError errNum, const char *str) 
 
         (void) (*jvmti)->GetErrorName(jvmti, errNum, &errnum_str);
 
-        printf("JVMTI: ERROR %d %s: %s \n", errNum,
+        printf("(jvmti) ERROR %d %s: %s \n", errNum,
                (errnum_str == NULL ? "Unknown error" : errnum_str), (str == NULL ? "" : str));
 
         return false;
@@ -19,15 +19,14 @@ bool checkJVMTIError(jvmtiEnv *jvmti, const jvmtiError errNum, const char *str) 
     return true;
 }
 
-void JNICALL
-callbackExceptionEvent(jvmtiEnv *jvmti, JNIEnv *env, jthread thread, jmethodID method, jlocation location,
-                       jobject exception, jmethodID catchMethod, jlocation catchLocation) {
-    if ((*env)->ExceptionCheck(env) == JNI_FALSE) {
-        printf("JVMTI callback is called, but JNI tells us, that no exception is pending\n\n");
+void JNICALL callbackExceptionEvent(jvmtiEnv *jvmti, JNIEnv *jni_env, jthread thread, jmethodID method,
+                                    jlocation location,
+                                    jobject exception, jmethodID catchMethod, jlocation catchLocation) {
+    if ((*jni_env)->ExceptionCheck(jni_env) == JNI_FALSE) {
+        printf("(jvmti) JVMTI callback is called, but JNI tells us, that no exception is pending\n\n");
     }
-    // Because the if above will always be true, we cannot clear the exception with JNI and the catch clause of the
-    // application is still called --> TODO: visualize
-    (*env)->ExceptionClear(env);
+    // JVMTI is notified about exceptions before the JNI is aware of it, so clearing the exception is impossible right now
+    (*jni_env)->ExceptionClear(jni_env);
 
     jvmtiFrameInfo frames[10];
     jint count, entryCountPtr, methodArgumentSize;
@@ -56,7 +55,7 @@ callbackExceptionEvent(jvmtiEnv *jvmti, JNIEnv *env, jthread thread, jmethodID m
             error = (*jvmti)->GetLocalVariableTable(jvmti, frames[i].method, &entryCountPtr, &localVariableEntry);
             checkJVMTIError(jvmti, error, "Cannot Get Local Variable Table");
 
-            printf("Got Exception in Method '%s' of class '%s' with %d parameters\n", methodName, className,
+            printf("(jvmti) Got Exception in Method '%s' of class '%s' with %d parameters\n", methodName, className,
                    methodArgumentSize);
             for (int j = 0; j < entryCountPtr; ++j) {
                 jobject localVarPtr;
@@ -64,28 +63,29 @@ callbackExceptionEvent(jvmtiEnv *jvmti, JNIEnv *env, jthread thread, jmethodID m
                 checkJVMTIError(jvmti, error, "Cannot Get Local Object");
 
                 jboolean isCopy;
-                const char *result = (*env)->GetStringUTFChars(env, localVarPtr, &isCopy);
+                const char *result = (*jni_env)->GetStringUTFChars(jni_env, localVarPtr, &isCopy);
 
-                printf("method contains local variable '%s' of type '%s' with value '%s' \n",
+                printf("(jvmti) method contains local variable '%s' of type '%s' with value '%s' \n",
                        localVariableEntry[j].name, localVariableEntry[j].signature, result);
             }
             printf("\n");
         }
 
-        const jclass classOfException = (*env)->GetObjectClass(env, exception);
+        const jclass classOfException = (*jni_env)->GetObjectClass(jni_env, exception);
         (*jvmti)->GetClassSignature(jvmti, classOfException, &sig, &gsig);
-        printf("Exception is of class %s", sig);
+        printf("(jvmti) Exception is of class %s", sig);
 
-        const jmethodID methodId = (*env)->GetMethodID(env, classOfException, "getMessage", "()Ljava/lang/String;");
-        const jobject exceptionMessage = (*env)->CallObjectMethod(env, exception, methodId);
+        const jmethodID methodId = (*jni_env)->GetMethodID(jni_env, classOfException, "getMessage",
+                                                           "()Ljava/lang/String;");
+        const jobject exceptionMessage = (*jni_env)->CallObjectMethod(jni_env, exception, methodId);
         jboolean isCopy;
-        const char *result = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
+        const char *result = (*jni_env)->GetStringUTFChars(jni_env, exceptionMessage, &isCopy);
         printf(" with message '%s'\n", result);
     }
 
-    // printf("Now we skip catching or handling the exception by the application code...\n");
-    // error = (*jvmti)->ForceEarlyReturnVoid(jvmti, thread);
-    // checkJVMTIError(jvmti, error, "Cannot ForceEarlyReturnVoid");
+    // printf("(jvmti) Now we skip catching or handling the exception by the application code...\n");
+    // error = (*jvmti)->ForceEarlyReturnInt(jvmti, thread, 1);
+    // checkJVMTIError(jvmti, error, "Cannot ForceEarlyReturn");
 }
 
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *jvm, char *options, void *reserved) {

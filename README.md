@@ -16,9 +16,6 @@
 
 ## open ideas
 
-show that obfuscation helps to hide logic
-bytecode instrumentation? must be done manually
-
 https://github.com/AndroidAdvanceWithGeektime/JVMTI_Sample | quite complex
 
 https://github.com/HeapStats/heapstats | quite complex
@@ -27,12 +24,9 @@ https://github.com/headius/hprof2 | probably better to simply check out
 
 https://github.com/kylixs/flare-profiler/tree/master/flare-agent/src | quite complex
 
-https://github.com/xingfengwxx/MemoryMonitor/blob/master/app/src/main/cpp/native-lib.cpp -> can be used with oom slow-death to track memory allocations and so on
-
-https://github.com/toolfactory/narcissus/blob/main/src/main/c/narcissus.c | to bypass all jdk security measures
+https://github.com/xingfengwxx/MemoryMonitor/blob/master/app/src/main/cpp/native-lib.cpp -> can be used with oom
+slow-death to track memory allocations and so on
 
 bookmarks
 
 github search for certain jvmti usages
-
-what other tools use jvmti (and how)

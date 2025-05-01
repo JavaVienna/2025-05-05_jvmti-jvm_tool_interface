@@ -2,17 +2,18 @@
 #include <sys/un.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 // use 3-stacktraces for this agent
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
-    jclass clazz = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
+    const jclass clazz = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
     jint methodCounter;
-    jmethodID* methods;
+    jmethodID *methods;
     (*jvmti_env)->GetClassMethods(jvmti_env, clazz, &methodCounter, &methods);
 
     for (int i = 0; i < methodCounter; i++) {
-        char* methodName;
+        char *methodName;
         (*jvmti_env)->GetMethodName(jvmti_env, methods[i], &methodName, NULL, NULL);
         if (strcmp(methodName, "main") == 0) {
             (*jvmti_env)->SetBreakpoint(jvmti_env, methods[i], 0);
@@ -28,7 +29,7 @@ void Breakpoint(jvmtiEnv *jvmti_env,
                 jlocation location) {
     // only now activate single step events
     jvmtiError error = (*jvmti_env)->SetEventNotificationMode(jvmti_env, JVMTI_ENABLE, JVMTI_EVENT_SINGLE_STEP,
-                                                     thread);
+                                                              thread);
     if (error != JNI_OK) {
         printf("Error activating event\n");
     }

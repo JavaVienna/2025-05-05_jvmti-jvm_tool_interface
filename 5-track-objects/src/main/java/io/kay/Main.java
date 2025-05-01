@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 public final class Main {
 
     private static final Random RANDOM = new Random();
-    private static final int BATCH_SIZE = 200;
+    private static final int BATCH_SIZE = 500;
 
     record Person(String name, int age) {
     }
@@ -26,7 +26,7 @@ public final class Main {
     }
 
     private static Person addPerson() {
-        byte[] bytes = new byte[25];
+        byte[] bytes = new byte[100];
         RANDOM.nextBytes(bytes);
         return new Person(new String(bytes), RANDOM.nextInt());
     }

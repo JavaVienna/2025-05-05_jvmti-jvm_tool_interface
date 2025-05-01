@@ -3,25 +3,29 @@
 #include "stdlib.h"
 
 void Breakpoint(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID method, jlocation location) {
-    jvmtiError err = (*jvmti_env)->ForceEarlyReturnInt(jvmti_env, thread, 1);
-    printf("In breakpoint %d\n", err);
+    printf("(jvmti) In breakpoint\n");
+    (*jvmti_env)->ForceEarlyReturnInt(jvmti_env, thread, 1);
+    printf("(jvmti) Forced early return\n");
+
+    // TODO read secret
 }
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
     const jclass class = (*jni_env)->FindClass(jni_env, "io/kay/Main");
     jint methodCounter;
-    jmethodID* methods;
+    jmethodID *methods;
     (*jvmti_env)->GetClassMethods(jvmti_env, class, &methodCounter, &methods);
 
-    printf("methodCounter = %d\n", methodCounter);
+    printf("(jvmti) methodCounter = %d\n", methodCounter);
     for (int i = 0; i < methodCounter; i++) {
-        char* methodName;
+        char *methodName;
         (*jvmti_env)->GetMethodName(jvmti_env, methods[i], &methodName, NULL, NULL);
-        printf("methodName = %s\n", methodName);
+        printf("(jvmti) methodName = %s\n", methodName);
         if (strcmp(methodName, "secretMatches") == 0) {
+            printf("(jvmti) Set breakpoint at method secretMatches\n");
             (*jvmti_env)->SetBreakpoint(jvmti_env, methods[i], 0);
         }
-        (*jvmti_env)->Deallocate(jvmti_env, (unsigned char*) methodName);
+        (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *) methodName);
     }
 }
 

@@ -8,3 +8,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-rest-jackson'
     implementation 'io.quarkus:quarkus-container-image-docker'
 }
+
+application {
+    applicationDefaultJvmArgs = ["-Djava.library.path=" + file("${buildDir}/../agent/11-jvmti-with-jni").absolutePath]
+}

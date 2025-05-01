@@ -41,6 +41,9 @@ public final class Main {
         synchronized (NUMBER) {
             System.out.printf("Thread %s sets number to %d\n", threadName, newNumber);
             NUMBER.number = newNumber;
+            nativeMethod();
         }
     }
+
+    private static native void nativeMethod();
 }

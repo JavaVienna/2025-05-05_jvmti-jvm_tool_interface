@@ -3,16 +3,18 @@
 #include <stdlib.h>
 #include <time.h>
 
+// use with 3-stacktraces
+
 typedef struct methodInfo {
     jmethodID method;
-    char* methodName;
+    char *methodName;
     struct timespec start_time;
 } methodInfo;
 
 int size = 0;
 methodInfo map[20000];
 
-methodInfo* findMethod(const jmethodID method) {
+methodInfo *findMethod(const jmethodID method) {
     for (int i = 0; i < size; i++) {
         if (map[i].method == method) {
             return &map[i];
@@ -23,12 +25,12 @@ methodInfo* findMethod(const jmethodID method) {
 }
 
 double diff(const struct timespec start, const struct timespec end) {
-    return ((double)end.tv_sec*1.0e3 + 1.0e-6*end.tv_nsec) -
-           ((double)start.tv_sec*1.0e3 + 1.0e-6*start.tv_nsec);
+    return ((double) end.tv_sec * 1.0e3 + 1.0e-6 * end.tv_nsec) -
+           ((double) start.tv_sec * 1.0e3 + 1.0e-6 * start.tv_nsec);
 }
 
 void MethodEntry(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID method) {
-    char* methodName;
+    char *methodName;
     (*jvmti_env)->GetMethodName(jvmti_env, method, &methodName, NULL, NULL);
 
     struct timespec start_time;
@@ -39,7 +41,7 @@ void MethodEntry(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID
 }
 
 void MethodExit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID method) {
-    const methodInfo* storedMethod = findMethod(method);
+    const methodInfo *storedMethod = findMethod(method);
     if (storedMethod != NULL) {
         struct timespec end;
         clock_gettime(CLOCK_MONOTONIC, &end);
@@ -77,12 +79,14 @@ jint Agent_OnLoad(JavaVM *vm, char *options, void *reserved) {
         return JNI_ERR;
     }
 
-    error = (*environment)->SetEventNotificationMode(environment,JVMTI_ENABLE,JVMTI_EVENT_METHOD_ENTRY,(jthread) NULL);
+    error = (*environment)->SetEventNotificationMode(environment, JVMTI_ENABLE, JVMTI_EVENT_METHOD_ENTRY,
+                                                     (jthread) NULL);
     if (error != JNI_OK) {
         return JNI_ERR;
     }
 
-    error = (*environment)->SetEventNotificationMode(environment, JVMTI_ENABLE, JVMTI_EVENT_METHOD_EXIT, (jthread) NULL);
+    error = (*environment)->
+            SetEventNotificationMode(environment, JVMTI_ENABLE, JVMTI_EVENT_METHOD_EXIT, (jthread) NULL);
     if (error != JNI_OK) {
         return JNI_ERR;
     }

@@ -1,5 +1,6 @@
 package io.kay;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +10,11 @@ public class ThreadOOM {
         System.out.println("Thread ~fork bombing the JVM ...");
         List<Thread> list = new ArrayList<>();
         try {
-            for (int i = 0; i < 127 * 1024 * 1020; i++) {
+            for (int i = 0; i < 100_000; i++) {
                 Thread thread = new Thread(() -> {
                     while (true) {
                         try {
-                            Thread.sleep(60000);
+                            Thread.sleep(Duration.ofMinutes(2));
                             System.out.println("Done!");
                         } catch (InterruptedException ign) {
                         }
@@ -22,7 +23,7 @@ public class ThreadOOM {
                 thread.start();
                 // Hold onto the thread
                 list.add(thread);
-                if (list.size() % 10000 == 0) {
+                if (list.size() % 10_000 == 0) {
                     System.out.println("Spawned [" + list.size() + "] threads ...");
                 }
             }

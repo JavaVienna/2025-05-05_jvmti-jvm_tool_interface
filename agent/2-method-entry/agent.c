@@ -2,8 +2,11 @@
 #include <sys/un.h>
 
 // The JVM calls this method each time a new bytecode method is called
-void MethodEntry(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread, jmethodID method) {
-    printf("methodId entry of %p\n", method);
+void MethodEntry(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID method) {
+    char *methodName;
+    (*jvmti_env)->GetMethodName(jvmti_env, method, &methodName, NULL, NULL);
+    printf("methodId entry of %s\n", methodName);
+    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *) methodName);
 }
 
 // is called when java agent is loaded
