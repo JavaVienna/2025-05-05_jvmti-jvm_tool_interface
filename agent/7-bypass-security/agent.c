@@ -7,7 +7,7 @@ void Breakpoint(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, jmethodID 
     (*jvmti_env)->ForceEarlyReturnInt(jvmti_env, thread, 1);
     printf("(jvmti) Forced early return\n");
 
-    // TODO read secret
+    // TODO print out secret
 }
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {

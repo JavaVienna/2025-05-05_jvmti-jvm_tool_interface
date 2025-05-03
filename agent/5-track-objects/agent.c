@@ -30,19 +30,19 @@ jvmtiIterationControl iterateCallback(jlong class_tag, jlong size, jlong *tag_pt
 
 void VMInit(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread) {
     jclass klass = (*jni_env)->FindClass(jni_env, "Lio/kay/Main;");
-    jmethodID id = (*jni_env)->GetStaticMethodID(jni_env, klass, "execute", "(Ljava/util/List;)V");
+    jmethodID methodId = (*jni_env)->GetStaticMethodID(jni_env, klass, "execute", "(Ljava/util/List;)V");
 
     jlocation start;
     jlocation end;
-    (*jvmti_env)->GetMethodLocation(jvmti_env, id, &start, &end);
-    (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 23); // without
-    // (*jvmti_env)->SetBreakpoint(jvmti_env, id, end - 26); // with System.gc()
+    (*jvmti_env)->GetMethodLocation(jvmti_env, methodId, &start, &end);
+    (*jvmti_env)->SetBreakpoint(jvmti_env, methodId, end - 23); // without
+    // (*jvmti_env)->SetBreakpoint(jvmti_env, methodId, end - 26); // with System.gc()
 
     jint variableCount;
     jvmtiLocalVariableEntry *variables;
-    (*jvmti_env)->GetLocalVariableTable(jvmti_env, id, &variableCount, &variables);
+    (*jvmti_env)->GetLocalVariableTable(jvmti_env, methodId, &variableCount, &variables);
 
-    printf("(jvmti) Method %p has %d local variables: \n", id, variableCount);
+    printf("(jvmti) Method %p has %d local variables: \n", methodId, variableCount);
     for (int i = 0; i < variableCount; i++) {
         printf("(jvmti) Variable #%d: %s \n", i, variables[i].name);
     }
@@ -78,7 +78,7 @@ void Breakpoint(jvmtiEnv *jvmti_env,
         const char *name = (*jni_env)->GetStringUTFChars(jni_env, personName, &isCopy);
 
         if (strcmp(name, "Reflected Person") == 0) {
-            const jobject newString = (*jni_env)->NewStringUTF(jni_env, "Reflected edited by agent");
+            const jobject newString = (*jni_env)->NewStringUTF(jni_env, "Agent edit for Reflected");
             (*jni_env)->SetObjectField(jni_env, objects[i], fieldIDs[0], newString);
         }
         if (strcmp(name, "Mister X") == 0) {

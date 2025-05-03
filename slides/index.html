@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
 
     <title>JVMTI - JVM Tool Interface</title>
 
-    <meta name="description" content="Introduction to JVMTI and how to monitor applications with it">
+    <meta name="description" content="JVMTI - The JVM Tool Interface">
     <meta name="author" content="Kevin Watzal">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +16,7 @@
     <link rel="stylesheet" href="dist/reset.css">
     <link rel="stylesheet" href="dist/reveal.css">
     <link rel="stylesheet" href="dist/theme/blood.css" id="theme">
-    <style type="text/css" media="screen">
+    <style media="all">
         .reveal .slides {
             background-image: url("assets/hotsource.svg");
             background-repeat: no-repeat;
@@ -44,8 +43,9 @@
 
         <section data-auto-animate>
             <h1 data-id="code-title">JVMTI</h1>
+            <p>The JVM Tool Interface</p>
             <p>
-                The JVM Tool Interface, what you can do with it and how tools you use utilize JVMTI
+                how tools you use utilize it and how it helps you gather information about JVM apps
             </p>
             <div style="padding: 5%"></div>
             <small>
@@ -58,16 +58,22 @@
 
             <div style="display: flex; padding-right: 2%">
                 <div style="display: flex; flex-direction: column; width: 60%">
-                    <p>Developer since finishing school (2017)</p>
-                    <p>Studied IT-Security besides work</p>
+                    <p>
+                        Passionate about JVM <br/> since school
+                    </p>
+                    <p>Developer at <img src="assets/hotsource.svg"
+                                         style="height: 50px; margin-bottom: -15px"/></p>
+                    <p>
+                        Studied IT-Security
+                        <img src="assets/fhstp.svg" style="height: 100px; margin-top: 0; margin-bottom: -15px"/>
+                    </p>
                     <p>JVMTI was the main focus of my master thesis</p>
+                    <p></p>
                 </div>
 
                 <div style="display: flex; width: 40%">
                     <img src="assets/me.png" style="width: 100%; height: 90%"/>
                 </div>
-
-                <!--TODO email?-->
             </div>
 
         </section>
@@ -82,13 +88,13 @@
             <pre class="fragment">
 			<code class="text" data-trim>
                 Exception in thread "main" java.lang.NullPointerException
-                    at io.kay.Main.main(Main.java:20)
+                    at io.kay.Main.main(Main.java:7)
 			</code>
 			</pre>
 
             <div class="fragment">
                 <pre data-id="code-animation">
-				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="19" data-line-numbers="2">
+				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="6" data-line-numbers="2">
 				public static void main(String[] args) {
 					var value = Helper.getMap().get("data").getData().toLowerCase();
 					System.out.println(value);
@@ -98,20 +104,19 @@
             </div>
         </section>
 
-
         <section data-auto-animate data-auto-animate-unmatched="fade">
             <h3 data-id="code-title">Null Pointer Exception <br/><strong>in Java 11</strong></h3>
 
             <pre>
 			<code class="text" data-trim>
                 Exception in thread "main" java.lang.NullPointerException
-                    at io.kay.Main.main(Main.java:20)
+                    at io.kay.Main.main(Main.java:7)
 			</code>
 			</pre>
 
             <div>
                 <pre data-id="code-animation">
-				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="18" data-line-numbers="3">
+				<code class="hljs language-java r-fit-text" data-trim data-ln-start-from="5" data-line-numbers="3">
 				public static void main(String[] args) {
                     // 3 possibilities which could be null in this line
 					var value = Helper.getMap().get("data").getData().toLowerCase();
@@ -138,8 +143,9 @@
             <h2>Let's talk basics</h2>
             <p>What do you need to run a program in the JVM?</p>
             <img src="assets/jvm.drawio.svg" class="fragment"/>
-            <p class="fragment">Bytecode & JVM are <a
-                    href="https://docs.oracle.com/javase/specs/jvms/se24/html/index.html">standardized</a>
+            <p class="fragment">
+                Bytecode & JVM are
+                <a href="https://docs.oracle.com/javase/specs/jvms/se24/html/index.html">standardized</a>
             </p>
             <p class="fragment">The JVM is natively compiled for the machine it runs on</p>
         </section>
@@ -180,11 +186,11 @@
         <section data-auto-animate>
             <h2>Which tools use JVMTI?</h2>
             <ul>
-                <li>Debuggers</li>
-                <li>Profilers</li>
-                <li>Analyzers</li>
-                <li class="fragment">Malware</li>
-                <li class="fragment">Specific solutions for specific problems</li>
+                <li>Debuggers (e.g. IntelliJ, JPDA/JDWP)</li>
+                <li>Profilers (e.g. DataDog, Lightrun)</li>
+                <li>Security Analyzers (back in Applet-time)</li>
+                <li>Bypassing security measures (e.g. license checks)</li>
+                <li>Specific solutions for specific problems</li>
             </ul>
         </section>
 
@@ -193,9 +199,9 @@
             <ul>
                 <li>Tracking of threads, objects, garbage collection</li>
                 <li>Inspect field access/modification or class loading</li>
-                <li>Combine with JNI(Java Native Interface)</li>
                 <li>Custom Debugging</li>
                 <li>Modifying execution flow or values</li>
+                <li>Combine with JNI(Java Native Interface)</li>
                 <li>Bytecode instrumentation</li>
             </ul>
         </section>
@@ -223,7 +229,6 @@
                     (*jvmti)->AddCapabilities(jvmti, &capabilities);
 				</code>
 			</pre>
-
         </section>
 
         <section data-auto-animate>
@@ -239,7 +244,7 @@
                     }
                     //...
                     jvmtiEventCallbacks callbacks;
-                    callbacks.MethodEntry = (void *) &MethodEntryCallback;
+                    callbacks.MethodEntry = (void *) &MethodEntryCallback; // link callback
 
                     (*jvmti)->SetEventCallbacks(
                         jvmti,
@@ -247,7 +252,7 @@
                         (jint) sizeof(callbacks)
                     );
 
-                    // does not need to be on agent startup
+                    // activate - does not need to be on agent startup
                     (*jvmti)->SetEventNotificationMode(
                         jvmti,
                         JVMTI_ENABLE,
@@ -270,49 +275,7 @@
         </section>
 
         <section data-auto-animate>
-            <section>
-                <h1>Let's start with examples!</h1>
-            </section>
-
-            <section data-auto-animate>
-                <p>Enhance NullPointerExceptions</p>
-            </section>
-
-            <section>
-                <p>Print all executed methods</p>
-            </section>
-
-            <section>
-                <p>Find hidden exceptions</p>
-            </section>
-
-            <section>
-                <p>Detect and solve Thread-Starvation</p>
-            </section>
-
-            <section>
-                <p>Track objects in the heap</p>
-            </section>
-
-            <section>
-                <p>Track threads</p>
-            </section>
-
-            <section>
-                <p>Bypass security measures</p>
-            </section>
-
-            <section>
-                <p>Watch field modifications</p>
-            </section>
-
-            <section>
-                <p>Measure method performance</p>
-            </section>
-
-            <section>
-                <p>Custom debugging</p>
-            </section>
+            <h1>Let's start with examples!</h1>
         </section>
 
         <section data-auto-animate data-background-size="74%"
@@ -329,7 +292,7 @@
         <section data-auto-animate>
             <h2>Beware</h2>
             <p>Don't simply add any (untrusted) agent to your jar</p>
-            <p>JVMTI applied to Spring applications is much harder</p>
+            <p>JVMTI applied to Spring applications may be more complex</p>
             <p class="fragment">JVMTI adds runtime overhead to your application</p>
             <p class="fragment">Callbacks are <strong>blocking</strong> operations</p>
         </section>
@@ -356,6 +319,7 @@
         preloadIframes: true,
         hash: true,
         history: true,
+        pdfSeparateFragments: false,
 
         // Learn about plugins: https://revealjs.com/plugins/
         plugins: [RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight]

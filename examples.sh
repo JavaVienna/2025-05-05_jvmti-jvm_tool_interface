@@ -1,7 +1,15 @@
+#!/bin/zsh
 
 case $1 in
   1)
-    sdk use java 11.0.26-tem
+    VERSION=$(java --version | head -n 1)
+
+    if ! [[ $VERSION =~ (^openjdk 11*) ]]
+    then
+      echo "Not using java 11!"
+      exit 1
+    fi
+
     if [ -z $2 ]
     then
       echo "java -jar 1-npe/build/libs/1-npe-1.0-SNAPSHOT.jar"
@@ -10,9 +18,16 @@ case $1 in
       echo "java -agentpath:agent/1-npe/libagent-1.so -jar 1-npe/build/libs/1-npe-1.0-SNAPSHOT.jar"
       java -agentpath:agent/1-npe/libagent-1.so -jar 1-npe/build/libs/1-npe-1.0-SNAPSHOT.jar
     fi
-    sdk use java 21.0.6-tem
     ;;
   2)
+    VERSION=$(java --version | head -n 1)
+
+    if ! [[ $VERSION =~ (^openjdk 21*) ]]
+    then
+      echo "Still using java 11!"
+      exit 1
+    fi
+
     if [ -z $2 ]
     then
       echo "java -jar 2-simple/build/libs/2-simple-1.0-SNAPSHOT.jar"
@@ -43,6 +58,8 @@ case $1 in
     fi
     ;;
   4)
+    echo "ulimit -u 7000"
+    ulimit -u 7000
     if [ -z $2 ]
     then
       echo "java -jar 4-oom/build/libs/4-oom-1.0-SNAPSHOT.jar"
@@ -51,6 +68,7 @@ case $1 in
       echo "java -agentpath:agent/4-jvmquake/libagent-4.so -jar 4-oom/build/libs/4-oom-1.0-SNAPSHOT.jar"
       java -agentpath:agent/4-jvmquake/libagent-4.so -jar 4-oom/build/libs/4-oom-1.0-SNAPSHOT.jar
     fi
+    ulimit -u unlimited
     ;;
   5)
     if [ -z $2 ]
@@ -63,18 +81,20 @@ case $1 in
     fi
     ;;
   7)
+    cd 7-bypass-security
     if [ -z $2 ]
     then
-      echo "java -jar 7-bypass-security/build/libs/7-bypass-security-1.0-SNAPSHOT.jar"
-      java -jar 7-bypass-security/build/libs/7-bypass-security-1.0-SNAPSHOT.jar
+      echo "java -jar build/libs/7-bypass-security-1.0-SNAPSHOT.jar"
+      java -jar build/libs/7-bypass-security-1.0-SNAPSHOT.jar
     else
-      echo "java -agentpath:agent/7-bypass-security/libagent-7.so -jar 7-bypass-security/build/libs/7-bypass-security-1.0-SNAPSHOT.jar"
-      java -agentpath:agent/7-bypass-security/libagent-7.so -jar 7-bypass-security/build/libs/7-bypass-security-1.0-SNAPSHOT.jar
+      echo "java -agentpath:../agent/7-bypass-security/libagent-7.so -jar build/libs/7-bypass-security-1.0-SNAPSHOT.jar"
+      java -agentpath:../agent/7-bypass-security/libagent-7.so -jar build/libs/7-bypass-security-1.0-SNAPSHOT.jar
     fi
+    cd ..
     ;;
   8)
-    echo "java -agentpath:agent/8-watch-field/libagent-8.so -jar 8-quarkus-app/build/quarkus-app/quarkus-run.jar&"
-    java -agentpath:agent/8-watch-field/libagent-8.so -jar 8-quarkus-app/build/quarkus-app/quarkus-run.jar&
+    echo "java -agentpath:agent/8-watch-field/libagent-8.so -jar 8-quarkus-app/build/quarkus-app/quarkus-run.jar"
+    java -agentpath:agent/8-watch-field/libagent-8.so -jar 8-quarkus-app/build/quarkus-app/quarkus-run.jar
     ;;
   9)
     echo "java -agentpath:agent/9-method-performance/libagent-9.so -jar 3-stacktraces/build/libs/3-stacktraces-1.0-SNAPSHOT.jar"
@@ -84,7 +104,7 @@ case $1 in
     echo "java -agentpath:agent/10-debugging/libagent-10.so -jar 3-stacktraces/build/libs/3-stacktraces-1.0-SNAPSHOT.jar"
     java -agentpath:agent/10-debugging/libagent-10.so -jar 3-stacktraces/build/libs/3-stacktraces-1.0-SNAPSHOT.jar
     ;;
-  x6)
+  6)
     if [ -z $2 ]
     then
       echo "java -jar 6-track-threads/build/libs/6-track-threads-1.0-SNAPSHOT.jar"

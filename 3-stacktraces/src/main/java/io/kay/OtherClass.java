@@ -3,14 +3,14 @@ package io.kay;
 public final class OtherClass {
 
     public static void methodStack3() {
-        if (exceptionMethod("This may be an easy to fix exception...", "This is argument is unused", 42)) {
+        if (exceptionMethod("This argument is unused", 42)) {
             System.out.println("This statement is unreachable normally");
         }
     }
 
-    private static boolean exceptionMethod(String message, String otherString, int someInt) {
+    private static boolean exceptionMethod(String otherString, int someInt) {
         try {
-            throw new Exception(message);
+            throw new Exception("This may be an easy to fix exception...");
         } catch (Exception ex) {
             System.err.print("...but I'm hiding it");
         } finally {

@@ -25,10 +25,11 @@ void ClassPrepare(jvmtiEnv *jvmti_env, JNIEnv *jni_env, jthread thread, const jc
         }
     }
 
-    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *)sig);
+    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *) sig);
 }
 
 int currentlyAccessed = 0;
+
 void FieldAccess(jvmtiEnv *jvmti_env,
                  JNIEnv *jni_env,
                  jthread thread,
@@ -45,13 +46,14 @@ void FieldAccess(jvmtiEnv *jvmti_env,
     char *methodName;
     (*jvmti_env)->GetMethodName(jvmti_env, method, &methodName, NULL, NULL);
     const jint value = (*jni_env)->GetIntField(jni_env, object, field);
-    printf("Access to field 'someNumber' occurred in method '%s' has value '%d'\n", methodName, value);
+    printf("(jvmti) Access to field 'someNumber' occurred in method '%s' has value '%d'\n", methodName, value);
 
-    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char*) methodName);
+    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *) methodName);
     currentlyAccessed = 0;
 }
 
 int currentlyModified = 0;
+
 void FieldModification(jvmtiEnv *jvmti_env,
                        JNIEnv *jni_env,
                        jthread thread,
@@ -70,9 +72,10 @@ void FieldModification(jvmtiEnv *jvmti_env,
     char *methodName;
     (*jvmti_env)->GetMethodName(jvmti_env, method, &methodName, NULL, NULL);
     const jint value = (*jni_env)->GetIntField(jni_env, object, field);
-    printf("Modification of field 'someNumber' occurred in method '%s' changes value from '%d' to '%d'\n", methodName, value, new_value.i);
+    printf("(jvmti) Modification of field 'someNumber' occurred in method '%s' changes value from '%d' to '%d'\n",
+           methodName, value, new_value.i);
 
-    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char*) methodName);
+    (*jvmti_env)->Deallocate(jvmti_env, (unsigned char *) methodName);
     currentlyModified = 0;
 }
 
